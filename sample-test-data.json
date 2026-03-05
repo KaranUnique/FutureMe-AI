@@ -1,0 +1,73 @@
+{
+  "description": "Sample input payload for the /api/project endpoint",
+  "request": {
+    "age": 25,
+    "screenTime": 8,
+    "sleepHours": 5,
+    "exerciseFreq": 1,
+    "dietQuality": 4,
+    "savingsRate": 5,
+    "debtLevel": 8000,
+    "learningHours": 5,
+    "stressLevel": 9,
+    "jobRole": "Startup Founder",
+    "skillFocus": "Product Management"
+  },
+  "mockResponse": {
+    "success": true,
+    "data": {
+      "currentPath": {
+        "scores": {
+          "healthRisk": 74,
+          "financialStability": 50,
+          "careerGrowth": 42,
+          "burnoutRisk": 82,
+          "overallStability": 43
+        },
+        "aiInsights": {
+          "summary": "Your intense drive for product management is commendable, but the lack of sleep and high stress are creating an unsustainable trajectory. You are at severe risk of burnout within 18 months.",
+          "compoundingRisks": [
+            "Sleep deprivation is compounding stress and reducing decision quality.",
+            "High debt combined with low savings creates extreme financial fragility.",
+            "Minimal exercise accelerates long-term health deterioration under stress."
+          ],
+          "optimisticScenario": "If you build a sustainable routine, your heavy learning investment will pay off, positioning you for a lucrative leadership role with solid financial footing.",
+          "worstCaseScenario": "Severe burnout forces a prolonged career break, eliminating your savings and halting your product management ascent.",
+          "behavioralImprovements": [
+            "Increase sleep to a minimum of 7 hours per night.",
+            "Schedule three 30-minute exercise sessions weekly.",
+            "Implement a strict 'screens-off' policy 1 hour before bed.",
+            "Reallocate 5% more income toward an emergency fund.",
+            "Limit intense working hours to prevent chronic stress accumulation."
+          ],
+          "letterFromFuture": "Hey, from 2029. We hit a wall hard. The startup burned us out, and the debt became a nightmare because we couldn't work for six months. I deeply regret not taking those rest days. But if you take care of our health now, I promise we have the energy to build something incredible—and actually enjoy it."
+        }
+      },
+      "improvedPath": {
+        "scores": {
+          "healthRisk": 45,
+          "financialStability": 50,
+          "careerGrowth": 56,
+          "burnoutRisk": 34,
+          "overallStability": 68
+        },
+        "aiInsights": {
+          "summary": "By improving sleep, exercise, and managing stress, your trajectory shifts significantly towards long-term sustainable growth.",
+          "compoundingRisks": [
+            "Minor risks of work-life imbalance if boundaries slip"
+          ],
+          "optimisticScenario": "Optimal health fuels rapid career progression and financial stability.",
+          "worstCaseScenario": "Slight delays in career goals due to re-balancing effort, but overall healthy.",
+          "behavioralImprovements": [
+            "Increase sleep to a minimum of 7 hours per night.",
+            "Schedule three 30-minute exercise sessions weekly.",
+            "Implement a strict 'screens-off' policy 1 hour before bed.",
+            "Reallocate 5% more income toward an emergency fund.",
+            "Limit intense working hours to prevent chronic stress accumulation."
+          ],
+          "letterFromFuture": "Hey, from three years down the line. Thank you. Those changes you made to prioritize sleep and health completely changed our life. We have the energy to tackle our goals, and the burnout is gone. We achieved more than we thought possible, and we are actually happy."
+        }
+      }
+    }
+  }
+}
