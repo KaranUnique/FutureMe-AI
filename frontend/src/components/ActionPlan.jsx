@@ -44,7 +44,7 @@ const ActionPlan = ({ data, onBack }) => {
     const generateRoutine = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/generate-routine",
+          `${import.meta.env.VITE_API_URL}/generate-routine`,
           {
             method: "POST",
             headers: {
