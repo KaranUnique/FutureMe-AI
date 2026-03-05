@@ -12,7 +12,7 @@ function App() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('http://localhost:5000/api/project', {
+      const response = await fetch('https://futureme-ai-awni.onrender.com/api/project', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
