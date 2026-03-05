@@ -12,7 +12,7 @@ function App() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('https://futureme-ai-awni.onrender.com/api/project', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/project`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
