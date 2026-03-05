@@ -295,7 +295,7 @@ const ActionPlan = ({ data, onBack }) => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setShowChallengeModal(true)}
-            className="group relative flex items-center justify-center gap-2 sm:gap-3 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:from-emerald-500 hover:via-teal-500 hover:to-cyan-500 text-white px-6 sm:px-10 py-4 sm:py-5 rounded-full font-black text-lg sm:text-xl md:text-2xl transition-all shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:shadow-[0_0_50px_rgba(16,185,129,0.8)] overflow-hidden w-full sm:w-auto"
+            className="group relative flex items-center justify-center gap-2 sm:gap-3 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:from-emerald-500 hover:via-teal-500 hover:to-cyan-500 text-white px-6 sm:px-10 py-4 sm:py-5 rounded-full font-black text-lg sm:text-xl md:text-2xl transition-all shadow-lg hover:shadow-xl overflow-hidden w-full sm:w-auto"
           >
             <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out"></div>
             <Trophy

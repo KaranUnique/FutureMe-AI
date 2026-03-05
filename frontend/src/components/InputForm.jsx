@@ -1,50 +1,126 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  User, Briefcase, Target, 
-  Monitor, Moon, Activity, Apple, BrainCircuit, 
-  TrendingUp, CreditCard, BookOpen, 
-  ChevronRight, ChevronLeft, Sparkles, Check
-} from 'lucide-react';
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  User,
+  Briefcase,
+  Target,
+  Monitor,
+  Moon,
+  Activity,
+  Apple,
+  BrainCircuit,
+  TrendingUp,
+  CreditCard,
+  BookOpen,
+  ChevronRight,
+  ChevronLeft,
+  Sparkles,
+  Check,
+} from "lucide-react";
 
 const InputForm = ({ onSubmit, loading }) => {
   const [step, setStep] = useState(1);
+  const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
-    age: 25,
-    screenTime: 6,
-    sleepHours: 7,
-    exerciseFreq: 2,
+    age: "",
+    screenTime: "",
+    sleepHours: "",
+    exerciseFreq: 3,
     dietQuality: 5,
-    savingsRate: 10,
-    debtLevel: 5000,
-    learningHours: 2,
+    savingsRate: "",
+    debtLevel: "",
+    learningHours: 5,
     stressLevel: 6,
-    jobRole: 'Software Engineer',
-    skillFocus: 'Full Stack Development'
+    jobRole: "",
+    skillFocus: "",
   });
+
+  const validateStep = (currentStep) => {
+    const newErrors = {};
+
+    if (currentStep === 1) {
+      if (!formData.age || formData.age < 18 || formData.age > 100) {
+        newErrors.age = "Please enter a valid age (18-100)";
+      }
+      if (!formData.jobRole || formData.jobRole.trim().length < 2) {
+        newErrors.jobRole = "Please enter your job role";
+      }
+      if (!formData.skillFocus || formData.skillFocus.trim().length < 2) {
+        newErrors.skillFocus = "Please enter your primary skill focus";
+      }
+    }
+
+    if (currentStep === 2) {
+      if (
+        !formData.sleepHours ||
+        formData.sleepHours < 0 ||
+        formData.sleepHours > 24
+      ) {
+        newErrors.sleepHours = "Please enter valid sleep hours (0-24)";
+      }
+      if (
+        !formData.screenTime ||
+        formData.screenTime < 0 ||
+        formData.screenTime > 24
+      ) {
+        newErrors.screenTime = "Please enter valid screen time (0-24)";
+      }
+    }
+
+    if (currentStep === 3) {
+      if (
+        !formData.savingsRate ||
+        formData.savingsRate < 0 ||
+        formData.savingsRate > 100
+      ) {
+        newErrors.savingsRate = "Please enter a valid savings rate (0-100)";
+      }
+      if (formData.debtLevel === "" || formData.debtLevel < 0) {
+        newErrors.debtLevel = "Please enter a valid debt amount";
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleNext = () => {
+    if (validateStep(step)) {
+      setStep((prev) => Math.min(prev + 1, 3));
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value, type } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'number' || type === 'range' ? Number(value) : value
+      [name]: type === "number" || type === "range" ? Number(value) : value,
     }));
+    // Clear error for this field when user starts typing
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const setQualitativeValue = (name, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
+    // Clear error for this field when user selects a value
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
-  const handleNext = () => setStep(prev => Math.min(prev + 1, 3));
-  const handleBack = () => setStep(prev => Math.max(prev - 1, 1));
+  const handleBack = () => setStep((prev) => Math.max(prev - 1, 1));
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (step === 3) {
-      onSubmit(formData);
+      if (validateStep(step)) {
+        onSubmit(formData);
+      }
     } else {
       handleNext();
     }
@@ -52,8 +128,12 @@ const InputForm = ({ onSubmit, loading }) => {
 
   const slideVariants = {
     hidden: { opacity: 0, x: 50 },
-    visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: "easeOut" } },
-    exit: { opacity: 0, x: -50, transition: { duration: 0.3, ease: "easeIn" } }
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.4, ease: "easeOut" },
+    },
+    exit: { opacity: 0, x: -50, transition: { duration: 0.3, ease: "easeIn" } },
   };
 
   return (
@@ -61,18 +141,22 @@ const InputForm = ({ onSubmit, loading }) => {
       {/* Progress Stepper */}
       <div className="flex justify-between items-center mb-10 relative px-4">
         <div className="absolute left-4 right-4 top-1/2 -translate-y-1/2 h-1 bg-gray-800 rounded-full z-0"></div>
-        <div className="absolute left-4 top-1/2 -translate-y-1/2 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full z-0 transition-all duration-500" style={{ width: `calc(${((step - 1) / 2) * 100}% - 2rem)` }}></div>
-        
+        <div
+          className="absolute left-4 top-1/2 -translate-y-1/2 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full z-0 transition-all duration-500"
+          style={{ width: `calc(${((step - 1) / 2) * 100}% - 2rem)` }}
+        ></div>
+
         {[1, 2, 3].map((num) => (
-          <div key={num} className={`relative z-10 flex items-center justify-center w-12 h-12 rounded-full font-bold text-lg transition-all duration-500 ${step >= num ? 'bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-[0_0_20px_rgba(139,92,246,0.6)] scale-110' : 'bg-gray-900 text-gray-600 border-2 border-gray-800'}`}>
+          <div
+            key={num}
+            className={`relative z-10 flex items-center justify-center w-12 h-12 rounded-full font-bold text-lg transition-all duration-500 ${step >= num ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-[0_0_20px_rgba(139,92,246,0.6)] scale-110" : "bg-gray-900 text-gray-600 border-2 border-gray-800"}`}
+          >
             {num}
           </div>
         ))}
       </div>
 
-      <motion.div 
-        className="bg-[#0b0f1a] border border-gray-800/80 p-8 md:p-10 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden backdrop-blur-2xl"
-      >
+      <motion.div className="bg-[#0b0f1a] border border-gray-800/80 p-8 md:p-10 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden backdrop-blur-2xl">
         {/* Glow Effects */}
         <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600"></div>
         <div className="absolute -top-32 -right-32 w-80 h-80 bg-purple-600/10 rounded-full blur-[80px] pointer-events-none"></div>
@@ -80,43 +164,146 @@ const InputForm = ({ onSubmit, loading }) => {
 
         <div className="relative z-10 mb-10 text-center">
           <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-400 tracking-tight">
-            {step === 1 ? 'Your Identity' : step === 2 ? 'Body & Mind' : 'Wealth & Growth'}
+            {step === 1
+              ? "Your Identity"
+              : step === 2
+                ? "Body & Mind"
+                : "Wealth & Growth"}
           </h2>
           <p className="text-gray-400 mt-3 text-sm md:text-base font-medium">
-            {step === 1 ? 'Define your current standing.' : step === 2 ? 'How are you treating your biological machine?' : 'Optimize your resources and adaptability.'}
+            {step === 1
+              ? "Define your current standing."
+              : step === 2
+                ? "How are you treating your biological machine?"
+                : "Optimize your resources and adaptability."}
           </p>
         </div>
-        
-        <form onSubmit={handleSubmit} className="relative z-10 min-h-[380px] flex flex-col justify-between">
+
+        <form
+          onSubmit={handleSubmit}
+          className="relative z-10 min-h-[380px] flex flex-col justify-between"
+        >
           <AnimatePresence mode="wait">
             {step === 1 && (
-              <motion.div key="step1" variants={slideVariants} initial="hidden" animate="visible" exit="exit" className="space-y-6">
-                <InputGroup icon={User} label="Current Age" name="age" type="number" value={formData.age} onChange={handleChange} min={18} max={100} color="blue" />
-                <InputGroup icon={Briefcase} label="Current Job Role" name="jobRole" type="text" value={formData.jobRole} onChange={handleChange} placeholder="e.g. Software Engineer" color="purple" />
-                <InputGroup icon={Target} label="Primary Skill Focus" name="skillFocus" type="text" value={formData.skillFocus} onChange={handleChange} placeholder="e.g. Machine Learning, Sales" color="cyan" />
+              <motion.div
+                key="step1"
+                variants={slideVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className="space-y-6"
+              >
+                <InputGroup
+                  icon={User}
+                  label="Current Age"
+                  name="age"
+                  type="number"
+                  value={formData.age}
+                  onChange={handleChange}
+                  min={18}
+                  max={100}
+                  placeholder="Enter your age"
+                  color="blue"
+                  error={errors.age}
+                />
+                <InputGroup
+                  icon={Briefcase}
+                  label="Current Job Role"
+                  name="jobRole"
+                  type="text"
+                  value={formData.jobRole}
+                  onChange={handleChange}
+                  placeholder="e.g. Software Engineer, Marketing Manager"
+                  color="purple"
+                  error={errors.jobRole}
+                />
+                <InputGroup
+                  icon={Target}
+                  label="Primary Skill Focus"
+                  name="skillFocus"
+                  type="text"
+                  value={formData.skillFocus}
+                  onChange={handleChange}
+                  placeholder="e.g. Machine Learning, Sales, Design"
+                  color="cyan"
+                  error={errors.skillFocus}
+                />
               </motion.div>
             )}
 
             {step === 2 && (
-              <motion.div key="step2" variants={slideVariants} initial="hidden" animate="visible" exit="exit" className="space-y-6">
+              <motion.div
+                key="step2"
+                variants={slideVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className="space-y-6"
+              >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <InputGroup icon={Moon} label="Sleep (hours/night)" name="sleepHours" type="number" value={formData.sleepHours} onChange={handleChange} min={0} max={24} color="blue" />
-                  <InputGroup icon={Monitor} label="Screen Time (hours/day)" name="screenTime" type="number" value={formData.screenTime} onChange={handleChange} min={0} max={24} color="indigo" />
+                  <InputGroup
+                    icon={Moon}
+                    label="Sleep (hours/night)"
+                    name="sleepHours"
+                    type="number"
+                    value={formData.sleepHours}
+                    onChange={handleChange}
+                    min={0}
+                    max={24}
+                    placeholder="Hours of sleep per night"
+                    color="blue"
+                    error={errors.sleepHours}
+                  />
+                  <InputGroup
+                    icon={Monitor}
+                    label="Screen Time (hours/day)"
+                    name="screenTime"
+                    type="number"
+                    value={formData.screenTime}
+                    onChange={handleChange}
+                    min={0}
+                    max={24}
+                    placeholder="Hours of screen time per day"
+                    color="indigo"
+                    error={errors.screenTime}
+                  />
                 </div>
-                <SliderGroup icon={Activity} label="Exercise Frequency" name="exerciseFreq" value={formData.exerciseFreq} onChange={handleChange} min={0} max={7} formatVal={(v) => `${v} days/wk`} color="blue" />
-                
+                <SliderGroup
+                  icon={Activity}
+                  label="Exercise Frequency"
+                  name="exerciseFreq"
+                  value={formData.exerciseFreq}
+                  onChange={handleChange}
+                  min={0}
+                  max={7}
+                  formatVal={(v) => `${v} days/wk`}
+                  color="blue"
+                />
+
                 {/* Descriptive Diet Quality UI */}
                 <QualitativeSelector
                   icon={Apple}
                   label="Diet Identity"
                   color="green"
                   options={[
-                    { value: 2, label: "Fast Food Heavy", desc: "Mostly takeout and processed meals" },
-                    { value: 5, label: "Average", desc: "Mix of home-cooked and convenience food" },
-                    { value: 9, label: "Clean & Planned", desc: "Mostly whole foods, balanced macros" }
+                    {
+                      value: 2,
+                      label: "Fast Food Heavy",
+                      desc: "Mostly takeout and processed meals",
+                    },
+                    {
+                      value: 5,
+                      label: "Average",
+                      desc: "Mix of home-cooked and convenience food",
+                    },
+                    {
+                      value: 9,
+                      label: "Clean & Planned",
+                      desc: "Mostly whole foods, balanced macros",
+                    },
                   ]}
                   currentValue={formData.dietQuality}
-                  onSelect={(v) => setQualitativeValue('dietQuality', v)}
+                  onSelect={(v) => setQualitativeValue("dietQuality", v)}
                 />
 
                 {/* Descriptive Stress Level UI */}
@@ -125,22 +312,74 @@ const InputForm = ({ onSubmit, loading }) => {
                   label="Daily Stress State"
                   color="rose"
                   options={[
-                    { value: 3, label: "Relaxed", desc: "Low pressure, manageable deadlines" },
-                    { value: 6, label: "Moderate", desc: "Busy, occasional pressure peaks" },
-                    { value: 9, label: "High Anxiety", desc: "Constant fire-fighting, poor work-life balance" }
+                    {
+                      value: 3,
+                      label: "Relaxed",
+                      desc: "Low pressure, manageable deadlines",
+                    },
+                    {
+                      value: 6,
+                      label: "Moderate",
+                      desc: "Busy, occasional pressure peaks",
+                    },
+                    {
+                      value: 9,
+                      label: "High Anxiety",
+                      desc: "Constant fire-fighting, poor work-life balance",
+                    },
                   ]}
                   currentValue={formData.stressLevel}
-                  onSelect={(v) => setQualitativeValue('stressLevel', v)}
+                  onSelect={(v) => setQualitativeValue("stressLevel", v)}
                 />
-
               </motion.div>
             )}
 
             {step === 3 && (
-              <motion.div key="step3" variants={slideVariants} initial="hidden" animate="visible" exit="exit" className="space-y-6">
-                <InputGroup icon={TrendingUp} label="Monthly Savings Rate (%)" name="savingsRate" type="number" value={formData.savingsRate} onChange={handleChange} min={0} max={100} color="emerald" />
-                <InputGroup icon={CreditCard} label="Estimated Debt ($)" name="debtLevel" type="number" value={formData.debtLevel} onChange={handleChange} min={0} step={100} color="rose" />
-                <SliderGroup icon={BookOpen} label="Learning Time" name="learningHours" value={formData.learningHours} onChange={handleChange} min={0} max={40} formatVal={(v) => `${v} hrs/wk`} color="blue" />
+              <motion.div
+                key="step3"
+                variants={slideVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className="space-y-6"
+              >
+                <InputGroup
+                  icon={TrendingUp}
+                  label="Monthly Savings Rate (%)"
+                  name="savingsRate"
+                  type="number"
+                  value={formData.savingsRate}
+                  onChange={handleChange}
+                  min={0}
+                  max={100}
+                  placeholder="Percentage of income saved"
+                  color="emerald"
+                  error={errors.savingsRate}
+                />
+                <InputGroup
+                  icon={CreditCard}
+                  label="Estimated Debt ($)"
+                  name="debtLevel"
+                  type="number"
+                  value={formData.debtLevel}
+                  onChange={handleChange}
+                  min={0}
+                  step={100}
+                  placeholder="Total debt amount"
+                  color="rose"
+                  error={errors.debtLevel}
+                />
+                <SliderGroup
+                  icon={BookOpen}
+                  label="Learning Time"
+                  name="learningHours"
+                  value={formData.learningHours}
+                  onChange={handleChange}
+                  min={0}
+                  max={40}
+                  formatVal={(v) => `${v} hrs/wk`}
+                  color="blue"
+                />
               </motion.div>
             )}
           </AnimatePresence>
@@ -150,7 +389,7 @@ const InputForm = ({ onSubmit, loading }) => {
             <button
               type="button"
               onClick={handleBack}
-              className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all ${step === 1 ? 'opacity-0 pointer-events-none' : 'text-gray-400 hover:text-white hover:bg-gray-800 active:scale-95'}`}
+              className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all ${step === 1 ? "opacity-0 pointer-events-none" : "text-gray-400 hover:text-white hover:bg-gray-800 active:scale-95"}`}
             >
               <ChevronLeft size={20} /> Back
             </button>
@@ -171,10 +410,13 @@ const InputForm = ({ onSubmit, loading }) => {
               >
                 <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out"></div>
                 {loading ? (
-                  <span className="flex items-center gap-2 animate-pulse">Running Simulation...</span>
+                  <span className="flex items-center gap-2 animate-pulse">
+                    Running Simulation...
+                  </span>
                 ) : (
                   <>
-                    <Sparkles size={20} className="text-blue-200" /> Generate Future Trajectory
+                    <Sparkles size={20} className="text-blue-200" /> Generate
+                    Future Trajectory
                   </>
                 )}
               </button>
@@ -188,29 +430,42 @@ const InputForm = ({ onSubmit, loading }) => {
 
 // Subcomponents for premium feel
 const colorMap = {
-  blue: 'text-blue-400 group-focus-within:text-blue-300',
-  purple: 'text-purple-400 group-focus-within:text-purple-300',
-  cyan: 'text-cyan-400 group-focus-within:text-cyan-300',
-  indigo: 'text-indigo-400 group-focus-within:text-indigo-300',
-  emerald: 'text-emerald-400 group-focus-within:text-emerald-300',
-  rose: 'text-rose-400 group-focus-within:text-rose-300',
-  green: 'text-emerald-400 group-focus-within:text-emerald-300'
+  blue: "text-blue-400 group-focus-within:text-blue-300",
+  purple: "text-purple-400 group-focus-within:text-purple-300",
+  cyan: "text-cyan-400 group-focus-within:text-cyan-300",
+  indigo: "text-indigo-400 group-focus-within:text-indigo-300",
+  emerald: "text-emerald-400 group-focus-within:text-emerald-300",
+  rose: "text-rose-400 group-focus-within:text-rose-300",
+  green: "text-emerald-400 group-focus-within:text-emerald-300",
 };
 
 const ringMap = {
-  blue: 'focus:border-blue-500 focus:ring-blue-500/20',
-  purple: 'focus:border-purple-500 focus:ring-purple-500/20',
-  cyan: 'focus:border-cyan-500 focus:ring-cyan-500/20',
-  indigo: 'focus:border-indigo-500 focus:ring-indigo-500/20',
-  emerald: 'focus:border-emerald-500 focus:ring-emerald-500/20',
-  rose: 'focus:border-rose-500 focus:ring-rose-500/20',
-  green: 'focus:border-emerald-500 focus:ring-emerald-500/20'
+  blue: "focus:border-blue-500 focus:ring-blue-500/20",
+  purple: "focus:border-purple-500 focus:ring-purple-500/20",
+  cyan: "focus:border-cyan-500 focus:ring-cyan-500/20",
+  indigo: "focus:border-indigo-500 focus:ring-indigo-500/20",
+  emerald: "focus:border-emerald-500 focus:ring-emerald-500/20",
+  rose: "focus:border-rose-500 focus:ring-rose-500/20",
+  green: "focus:border-emerald-500 focus:ring-emerald-500/20",
 };
 
-const InputGroup = ({ icon: Icon, label, name, type, value, onChange, placeholder, color="blue", ...props }) => (
+const InputGroup = ({
+  icon: Icon,
+  label,
+  name,
+  type,
+  value,
+  onChange,
+  placeholder,
+  color = "blue",
+  error,
+  ...props
+}) => (
   <div className="flex flex-col gap-2.5 relative group">
     <label className="text-sm font-semibold text-gray-300 ml-1 flex items-center gap-2.5 transition-colors">
-      <span className={`p-1.5 rounded-md bg-gray-800/50 border border-gray-700/50 ${colorMap[color]}`}>
+      <span
+        className={`p-1.5 rounded-md bg-gray-800/50 border border-gray-700/50 ${colorMap[color]}`}
+      >
         <Icon size={16} />
       </span>
       {label}
@@ -222,26 +477,42 @@ const InputGroup = ({ icon: Icon, label, name, type, value, onChange, placeholde
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className={`relative w-full bg-[#131b2c] border border-gray-700/80 ${ringMap[color]} focus:ring-4 rounded-xl px-4 py-3.5 text-white outline-none transition-all duration-300 placeholder:text-gray-600 font-medium shadow-inner`}
+        className={`relative w-full bg-[#131b2c] border ${error ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : `border-gray-700/80 ${ringMap[color]}`} focus:ring-4 rounded-xl px-4 py-3.5 text-white outline-none transition-all duration-300 placeholder:text-gray-600 font-medium shadow-inner`}
         {...props}
       />
     </div>
+    {error && (
+      <p className="text-red-400 text-xs mt-1 ml-1 flex items-center gap-1">
+        <span className="w-1 h-1 rounded-full bg-red-400"></span>
+        {error}
+      </p>
+    )}
   </div>
 );
 
 const sliderGradientMap = {
-  blue: 'from-blue-600 to-cyan-400',
-  green: 'from-emerald-600 to-green-400',
-  rose: 'from-rose-600 to-red-400'
+  blue: "from-blue-600 to-cyan-400",
+  green: "from-emerald-600 to-green-400",
+  rose: "from-rose-600 to-red-400",
 };
 
 const textColorMap = {
-  blue: 'text-blue-400',
-  green: 'text-emerald-400',
-  rose: 'text-rose-400'
+  blue: "text-blue-400",
+  green: "text-emerald-400",
+  rose: "text-rose-400",
 };
 
-const SliderGroup = ({ icon: Icon, label, name, value, onChange, min, max, formatVal, color = "blue" }) => {
+const SliderGroup = ({
+  icon: Icon,
+  label,
+  name,
+  value,
+  onChange,
+  min,
+  max,
+  formatVal,
+  color = "blue",
+}) => {
   const percentage = ((value - min) / (max - min)) * 100;
   const gradient = sliderGradientMap[color];
   const textColor = textColorMap[color];
@@ -250,17 +521,21 @@ const SliderGroup = ({ icon: Icon, label, name, value, onChange, min, max, forma
     <div className="flex flex-col gap-4 group mt-2">
       <div className="flex justify-between items-end">
         <label className="text-sm font-semibold text-gray-300 ml-1 flex items-center gap-2.5">
-          <span className={`p-1.5 rounded-md bg-gray-800/50 border border-gray-700/50 ${textColor}`}>
+          <span
+            className={`p-1.5 rounded-md bg-gray-800/50 border border-gray-700/50 ${textColor}`}
+          >
             <Icon size={16} />
           </span>
           {label}
         </label>
-        <span className={`text-sm font-bold bg-[#131b2c] ${textColor} px-3 py-1 rounded-lg border border-gray-700 shadow-sm`}>
+        <span
+          className={`text-sm font-bold bg-[#131b2c] ${textColor} px-3 py-1 rounded-lg border border-gray-700 shadow-sm`}
+        >
           {formatVal ? formatVal(value) : value}
         </span>
       </div>
       <div className="relative h-2.5 bg-[#131b2c] rounded-full border border-gray-800/80 overflow-visible mt-1">
-        <div 
+        <div
           className={`absolute top-0 left-0 h-full bg-gradient-to-r ${gradient} rounded-full transition-all duration-100 ease-out`}
           style={{ width: `${percentage}%` }}
         >
@@ -280,17 +555,27 @@ const SliderGroup = ({ icon: Icon, label, name, value, onChange, min, max, forma
   );
 };
 
-const QualitativeSelector = ({ icon: Icon, label, options, color, currentValue, onSelect }) => {
+const QualitativeSelector = ({
+  icon: Icon,
+  label,
+  options,
+  color,
+  currentValue,
+  onSelect,
+}) => {
   const textColor = textColorMap[color];
   const activeClassMap = {
-    green: 'border-emerald-500 bg-emerald-500/10 shadow-[0_0_15px_rgba(16,185,129,0.2)]',
-    rose: 'border-rose-500 bg-rose-500/10 shadow-[0_0_15px_rgba(244,63,94,0.2)]'
+    green:
+      "border-emerald-500 bg-emerald-500/10 shadow-[0_0_15px_rgba(16,185,129,0.2)]",
+    rose: "border-rose-500 bg-rose-500/10 shadow-[0_0_15px_rgba(244,63,94,0.2)]",
   };
 
   return (
     <div className="flex flex-col gap-3 group mt-2">
       <label className="text-sm font-semibold text-gray-300 ml-1 flex items-center gap-2.5 mb-1">
-        <span className={`p-1.5 rounded-md bg-gray-800/50 border border-gray-700/50 ${textColor}`}>
+        <span
+          className={`p-1.5 rounded-md bg-gray-800/50 border border-gray-700/50 ${textColor}`}
+        >
           <Icon size={16} />
         </span>
         {label}
@@ -298,7 +583,7 @@ const QualitativeSelector = ({ icon: Icon, label, options, color, currentValue, 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         {options.map((opt) => {
           const isActive =
-            (opt.value === currentValue) ||
+            opt.value === currentValue ||
             // Fallback matching logic if user lands between presets somehow
             (opt.value === 2 && currentValue <= 3) ||
             (opt.value === 5 && currentValue > 3 && currentValue <= 6) ||
@@ -310,9 +595,9 @@ const QualitativeSelector = ({ icon: Icon, label, options, color, currentValue, 
               type="button"
               onClick={() => onSelect(opt.value)}
               className={`relative flex flex-col items-start p-4 rounded-xl border text-left transition-all ${
-                isActive 
-                  ? activeClassMap[color] 
-                  : 'border-gray-700/80 bg-[#131b2c] hover:border-gray-500 hover:bg-gray-800'
+                isActive
+                  ? activeClassMap[color]
+                  : "border-gray-700/80 bg-[#131b2c] hover:border-gray-500 hover:bg-gray-800"
               }`}
             >
               {isActive && (
@@ -320,7 +605,9 @@ const QualitativeSelector = ({ icon: Icon, label, options, color, currentValue, 
                   <Check size={16} strokeWidth={3} />
                 </div>
               )}
-              <span className={`font-bold text-sm mb-1 ${isActive ? 'text-white' : 'text-gray-300'}`}>
+              <span
+                className={`font-bold text-sm mb-1 ${isActive ? "text-white" : "text-gray-300"}`}
+              >
                 {opt.label}
               </span>
               <span className="text-xs text-gray-500 leading-tight pr-4">
