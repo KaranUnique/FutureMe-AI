@@ -18,6 +18,7 @@ const corsOptions = {
     // In production, restrict to specific domains
     if (process.env.NODE_ENV === "production") {
       const allowedOrigins = [
+        "https://futureme-ai-1.onrender.com",
         "https://your-frontend-domain.vercel.app",
         "https://your-frontend-domain.netlify.app",
         // Add your production frontend URL here
@@ -25,6 +26,11 @@ const corsOptions = {
       if (allowedOrigins.indexOf(origin) === -1) {
         return callback(new Error("CORS policy violation"), false);
       }
+    }
+
+    // Also allow the specific frontend URL as a fallback
+    if (origin === "https://futureme-ai-1.onrender.com") {
+      return callback(null, true);
     }
 
     // In development, allow all origins
